@@ -1,8 +1,1 @@
-node_modules/
-out.webm
-.capture-src.y4m
-
-# Whitelist what ships in assets/. Everything else there is byproduct.
-assets/*
-!assets/hero.gif
-!assets/demo-source.jpg
+.DS_Store

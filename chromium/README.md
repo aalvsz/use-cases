@@ -39,17 +39,6 @@ That's it. The model auto-downloads from HuggingFace on first run (~3.6 MB) and 
 
 **Why not TensorFlow.js?** ONNX Runtime gives you a single model format that works in Python, Node, and the browser. Train once, deploy anywhere. TF.js requires its own conversion path and doesn't cover transformer-style detectors like RF-DETR.
 
-## Regenerating the hero GIF
-
-The GIF in this folder is generated from the live demo by a Playwright script:
-
-```bash
-npm install
-npm run capture
-```
-
-This boots a local server, points headless Chromium at the demo with a fake webcam, records 8 seconds, and converts to GIF via bundled ffmpeg. No system dependencies.
-
 ## Credits
 
 Built on [libreyolo-web](https://github.com/LibreYOLO/libreyolo-web) by [LibreYOLO](https://github.com/LibreYOLO). MIT licensed. No AGPL.

@@ -13,7 +13,7 @@
     // Apply theme before paint to avoid flash. Reads from localStorage,
     // falls back to "auto" (system preference).
     (function () {
-      const stored = localStorage.getItem('theme') || 'auto';
+      const stored = localStorage.getItem('theme') || 'light';
       const isDark = stored === 'dark' || (stored === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.classList.toggle('dark', isDark);
       document.documentElement.dataset.theme = stored;
@@ -204,7 +204,7 @@
         localStorage.setItem('theme', theme);
         buttons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.theme === theme ? 'true' : 'false'));
       };
-      apply(root.dataset.theme || 'auto');
+      apply(root.dataset.theme || 'light');
       buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.theme)));
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if (root.dataset.theme === 'auto') apply('auto');
