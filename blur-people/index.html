@@ -212,7 +212,7 @@
 
   <script type="module">
     import 'https://esm.sh/onnxruntime-web@1.21.0';
-    import { loadModel } from 'https://esm.sh/libreyolo-web@0.0.5';
+    import { loadModel } from 'https://esm.sh/libreyolo-web@0.0.6';
 
     const PERSON_CLASS_ID = 0;
     const BLUR_RADIUS = 24;
@@ -246,8 +246,6 @@
 
     setStatus('Warming up inference engine');
 
-    const frameCanvas = new OffscreenCanvas(video.videoWidth, video.videoHeight);
-    const frameCtx = frameCanvas.getContext('2d');
     const outCtx = output.getContext('2d');
 
     let lastTime = performance.now();
@@ -255,18 +253,15 @@
       if (video.readyState >= 2 && video.videoWidth > 0) {
         const w = video.videoWidth;
         const h = video.videoHeight;
-        if (frameCanvas.width !== w || frameCanvas.height !== h) {
-          frameCanvas.width = w;
-          frameCanvas.height = h;
+        if (output.width !== w || output.height !== h) {
           output.width = w;
           output.height = h;
         }
 
-        frameCtx.drawImage(video, 0, 0);
-        const result = await model.predict(frameCanvas);
+        const result = await model.predict(video);
 
         outCtx.filter = 'none';
-        outCtx.drawImage(frameCanvas, 0, 0);
+        outCtx.drawImage(video, 0, 0, w, h);
 
         const people = result.detections.filter((d) => d.classId === PERSON_CLASS_ID);
         if (people.length > 0) {
@@ -286,7 +281,7 @@
             outCtx.beginPath();
             outCtx.rect(sx, sy, sw, sh);
             outCtx.clip();
-            outCtx.drawImage(frameCanvas, 0, 0);
+            outCtx.drawImage(video, 0, 0, w, h);
             outCtx.restore();
           }
           outCtx.filter = 'none';

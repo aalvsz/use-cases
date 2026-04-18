@@ -216,7 +216,7 @@
     // Explicit peer-dep import so the fetch is visible in DevTools and breaks
     // loudly if esm.sh resolution ever changes.
     import 'https://esm.sh/onnxruntime-web@1.21.0';
-    import { loadModel, BoxOverlay } from 'https://esm.sh/libreyolo-web@0.0.5';
+    import { loadModel, BoxOverlay } from 'https://esm.sh/libreyolo-web@0.0.6';
 
     const video = document.getElementById('video');
     const canvas = document.getElementById('overlay');
@@ -247,21 +247,10 @@
     setStatus('Warming up inference engine');
     const overlay = new BoxOverlay({ canvas, lineWidth: 3, fontSize: 14 });
 
-    // libreyolo-web v0.0.5's PreProcessor reads `naturalWidth`/`width` to size the input,
-    // and HTMLVideoElement has neither (it has `videoWidth`/`videoHeight`). We work around
-    // that by drawing each frame to an OffscreenCanvas and passing the canvas to predict().
-    const frameCanvas = new OffscreenCanvas(video.videoWidth, video.videoHeight);
-    const frameCtx = frameCanvas.getContext('2d');
-
     let lastTime = performance.now();
     async function loop() {
       if (video.readyState >= 2 && video.videoWidth > 0) {
-        if (frameCanvas.width !== video.videoWidth || frameCanvas.height !== video.videoHeight) {
-          frameCanvas.width = video.videoWidth;
-          frameCanvas.height = video.videoHeight;
-        }
-        frameCtx.drawImage(video, 0, 0);
-        const result = await model.predict(frameCanvas);
+        const result = await model.predict(video);
         overlay.draw(result.detections, {
           originalWidth: video.videoWidth,
           originalHeight: video.videoHeight,
