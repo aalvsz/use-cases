@@ -19,6 +19,8 @@ import torch
 
 from libreyolo import LibreYOLO
 
+from src.common import blur_boxes
+
 
 def pick_device() -> str:
     if torch.cuda.is_available():
@@ -26,23 +28,6 @@ def pick_device() -> str:
     if torch.backends.mps.is_available():
         return "mps"
     return "cpu"
-
-
-def blur_boxes(img, boxes, pad: float = 0.15, kernel: int = 31) -> None:
-    h, w = img.shape[:2]
-    for x1, y1, x2, y2 in boxes:
-        bw, bh = x2 - x1, y2 - y1
-        px, py = int(bw * pad), int(bh * pad)
-        x1 = max(0, int(x1) - px)
-        y1 = max(0, int(y1) - py)
-        x2 = min(w, int(x2) + px)
-        y2 = min(h, int(y2) + py)
-        if x2 <= x1 or y2 <= y1:
-            continue
-        roi = img[y1:y2, x1:x2]
-        # Kernel must be odd; scale slightly with face size for chunkier blur.
-        k = max(kernel, (min(x2 - x1, y2 - y1) // 4) | 1)
-        img[y1:y2, x1:x2] = cv2.GaussianBlur(roi, (k, k), 0)
 
 
 def main() -> int:

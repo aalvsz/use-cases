@@ -1,6 +1,15 @@
-libreyolo>=1.0.0
-rfdetr==1.4.1   # libreyolo's RF-DETR wrapper imports rfdetr.main, removed after this version
+# Shared runtime deps.
 opencv-python>=4.8.0
-requests>=2.31.0
-tqdm>=4.66.0
+numpy>=1.26.0
+
+# "Use it" path: download the pretrained ONNX from HuggingFace and run it
+# through onnxruntime. No torch, no libreyolo.
+onnxruntime>=1.16.0
 huggingface_hub>=0.24.0
+
+# "Build it" path: download dataset, train RF-DETR, evaluate. Skip if you only
+# want to run src/use_pretrained.py.
+libreyolo>=1.0.0
+rfdetr==1.4.1         # libreyolo's RF-DETR wrapper imports rfdetr.main, removed after this version
+tqdm>=4.66.0
+requests>=2.31.0

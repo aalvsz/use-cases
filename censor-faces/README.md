@@ -10,13 +10,13 @@ A face detector and a face blur, end to end. Use the pretrained one or train you
 ## Path 1: use it (60 seconds)
 
 ```bash
-pip install libreyolo "rfdetr==1.4.1" opencv-python huggingface_hub
+pip install onnxruntime opencv-python huggingface_hub numpy
 
 python -m src.use_pretrained --image my_photo.jpg
 # writes my_photo.censored.jpg
 ```
 
-That's it. The script downloads `face.pt` from [LibreYOLO/face-rfdetr-nano](https://huggingface.co/LibreYOLO/face-rfdetr-nano) on first run and caches it locally.
+That's it. The script downloads `face.onnx` from [LibreYOLO/face-rfdetr-nano](https://huggingface.co/LibreYOLO/face-rfdetr-nano) on first run, caches it locally, and runs inference via `onnxruntime`. No torch, no libreyolo, no training stack.
 
 ## Path 2: build it (under an hour)
 
@@ -43,11 +43,13 @@ Click the Colab badge above. The notebook runs both paths end-to-end on a free T
 
 ```
 src/
+  common.py               shared blur helper (no heavy deps)
   download_widerface.py   build only: dataset acquisition + YOLO conversion
   train.py                build only: RF-DETR Nano fine-tuning loop
   eval.py                 build only: mAP on val split
-  censor.py               either path: load weights, detect, blur
-  use_pretrained.py       use only: HF download + censor in one command
+  censor.py               build only: load .pt weights, detect, blur
+  use_pretrained.py       use only: HF download + ONNX inference + blur
+  webcam.py               build only: live webcam demo with a trained .pt
 notebooks/
   pipeline.ipynb          Colab walkthrough
 ```
