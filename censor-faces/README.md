@@ -1,13 +1,20 @@
-# Censor Faces. Two paths. 100% MIT.
+# Censor Faces. Three paths. 100% MIT.
 
+[![Live demo](https://img.shields.io/badge/demo-live-brightgreen)](https://libreyolo.github.io/use-cases/censor-faces/demo/)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LibreYOLO/use-cases/blob/main/censor-faces/notebooks/pipeline.ipynb)
 [![PyPI](https://img.shields.io/pypi/v/libreyolo?label=libreyolo)](https://pypi.org/project/libreyolo/)
 [![HF model](https://img.shields.io/badge/%F0%9F%A4%97-face--rfdetr--nano-yellow)](https://huggingface.co/LibreYOLO/face-rfdetr-nano)
 [![License](https://img.shields.io/badge/license-MIT-green)](../LICENSE)
 
-A face detector and a face blur, end to end. Use the pretrained one or train your own. Both paths run with [LibreYOLO](https://github.com/LibreYOLO/libreyolo) and an RF-DETR Nano backbone.
+A face detector and a face blur, end to end. Use it in Python, use it in the browser, or train your own. All three run on the same RF-DETR Nano weights.
 
-## Path 1: use it (60 seconds)
+## Path 1: use it in the browser (zero install)
+
+Open https://libreyolo.github.io/use-cases/censor-faces/demo/ in Chrome, allow the camera, and every face in frame is blurred in real time. The 108 MB ONNX is pulled from [LibreYOLO/face-rfdetr-nano](https://huggingface.co/LibreYOLO/face-rfdetr-nano) on first visit and cached by the browser.
+
+The whole thing is one self-contained HTML file at [`demo/index.html`](./demo/index.html). Copy it anywhere, `open index.html`, same result.
+
+## Path 2: use it in Python (60 seconds)
 
 ```bash
 pip install onnxruntime opencv-python huggingface_hub numpy
@@ -16,9 +23,9 @@ python -m src.use_pretrained --image my_photo.jpg
 # writes my_photo.censored.jpg
 ```
 
-That's it. The script downloads `face.onnx` from [LibreYOLO/face-rfdetr-nano](https://huggingface.co/LibreYOLO/face-rfdetr-nano) on first run, caches it locally, and runs inference via `onnxruntime`. No torch, no libreyolo, no training stack.
+Same weights, downloaded from the same HF repo, run through `onnxruntime`. No torch, no libreyolo, no training stack.
 
-## Path 2: build it (under an hour)
+## Path 3: build it (under an hour)
 
 For when you want to learn the pipeline, fine-tune on your own data, or just not trust someone else's weights.
 
@@ -42,16 +49,19 @@ Click the Colab badge above. The notebook runs both paths end-to-end on a free T
 ## What's where
 
 ```
+demo/
+  index.html              path 1: in-browser face blur, self-contained
+  favicon.svg
 src/
   common.py               shared blur helper (no heavy deps)
   download_widerface.py   build only: dataset acquisition + YOLO conversion
   train.py                build only: RF-DETR Nano fine-tuning loop
   eval.py                 build only: mAP on val split
   censor.py               build only: load .pt weights, detect, blur
-  use_pretrained.py       use only: HF download + ONNX inference + blur
+  use_pretrained.py       path 2: HF download + ONNX inference + blur
   webcam.py               build only: live webcam demo with a trained .pt
 notebooks/
-  pipeline.ipynb          Colab walkthrough
+  pipeline.ipynb          Colab walkthrough of paths 2 and 3
 ```
 
 Each script is independent. Re-run any one in isolation.
@@ -68,17 +78,17 @@ In practice that's enough to blur most clearly visible faces in well-lit photos.
 | 500 | 0.85-0.90 (stable) | 2-3 hours |
 | 2000 | 0.90+ | 8-12 hours |
 
-## Run it in the browser
+## Export your own weights for the browser
 
-The same model exports to ONNX and runs client-side via [libreyolo-web](https://github.com/LibreYOLO/libreyolo-web):
+Path 1 points at the pretrained HF model. If you trained your own via path 3 and want the browser to use your weights, export to ONNX:
 
 ```python
 from libreyolo import LibreYOLO
-LibreYOLO("face.pt", nb_classes=1).export(format="onnx", opset=17)
+LibreYOLO("weights/face.pt", nb_classes=1).export(format="onnx", opset=17)
 # writes weights/rfdetr_n.onnx
 ```
 
-Then in JS, load it via `loadModel('./face.onnx', { modelFamily: 'rfdetr', inputSize: 384 })`. See the [chromium use case](../chromium/) for the page structure to copy from.
+Then edit `demo/index.html` and swap `MODEL_URL` for the path to your ONNX.
 
 ## FAQ
 
