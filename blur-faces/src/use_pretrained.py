@@ -1,4 +1,4 @@
-"""Download the pretrained ONNX face detector and censor an image. Zero training.
+"""Download the pretrained ONNX face detector and blur faces in an image. Zero training.
 
 The "use it" path: skip the dataset + training, just blur faces. Runs through
 `onnxruntime` so you don't need torch or libreyolo installed.
@@ -73,7 +73,7 @@ def main() -> int:
     if not args.image.exists():
         print(f"missing image: {args.image}", file=sys.stderr)
         return 1
-    out_path = args.out or args.image.with_name(args.image.stem + ".censored.jpg")
+    out_path = args.out or args.image.with_name(args.image.stem + ".blurred.jpg")
 
     print(f"downloading {HF_REPO}/{HF_FILE} (cached after first run)")
     onnx_path = hf_hub_download(repo_id=HF_REPO, filename=HF_FILE)

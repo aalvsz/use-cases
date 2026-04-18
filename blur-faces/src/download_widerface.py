@@ -1,4 +1,4 @@
-"""Download a tiny WIDERFACE subset for the censor-faces use case.
+"""Download a tiny WIDERFACE subset for the blur-faces use case.
 
 Pulls the validation split from a HuggingFace mirror, samples N images per
 event, writes a YOLO-style data.yaml. Total download is small enough to

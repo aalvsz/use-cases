@@ -1,4 +1,4 @@
-"""Live webcam face censor.
+"""Live webcam face blur.
 
 Opens your default camera, runs the trained face detector on every frame,
 and Gaussian-blurs every face it finds. Real-time. Press q or ESC to quit.
@@ -108,7 +108,7 @@ def main() -> int:
             2,
         )
 
-        cv2.imshow("censor faces (q to quit)", frame)
+        cv2.imshow("blur faces (q to quit)", frame)
         k = cv2.waitKey(1) & 0xFF
         if k in (ord("q"), 27):
             break

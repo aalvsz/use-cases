@@ -1,7 +1,7 @@
-# Censor Faces. Three paths. 100% MIT.
+# Blur Faces. Three paths. 100% MIT.
 
-[![Live demo](https://img.shields.io/badge/demo-live-brightgreen)](https://libreyolo.github.io/use-cases/censor-faces/demo/)
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LibreYOLO/use-cases/blob/main/censor-faces/notebooks/pipeline.ipynb)
+[![Live demo](https://img.shields.io/badge/demo-live-brightgreen)](https://libreyolo.github.io/use-cases/blur-faces/demo/)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/LibreYOLO/use-cases/blob/main/blur-faces/notebooks/pipeline.ipynb)
 [![PyPI](https://img.shields.io/pypi/v/libreyolo?label=libreyolo)](https://pypi.org/project/libreyolo/)
 [![HF model](https://img.shields.io/badge/%F0%9F%A4%97-face--rfdetr--nano-yellow)](https://huggingface.co/LibreYOLO/face-rfdetr-nano)
 [![License](https://img.shields.io/badge/license-MIT-green)](../LICENSE)
@@ -10,7 +10,7 @@ A face detector and a face blur, end to end. Use it in Python, use it in the bro
 
 ## Path 1: use it in the browser (zero install)
 
-Open https://libreyolo.github.io/use-cases/censor-faces/demo/ in Chrome, allow the camera, and every face in frame is blurred in real time. The 108 MB ONNX is pulled from [LibreYOLO/face-rfdetr-nano](https://huggingface.co/LibreYOLO/face-rfdetr-nano) on first visit and cached by the browser.
+Open https://libreyolo.github.io/use-cases/blur-faces/demo/ in Chrome, allow the camera, and every face in frame is blurred in real time. The 108 MB ONNX is pulled from [LibreYOLO/face-rfdetr-nano](https://huggingface.co/LibreYOLO/face-rfdetr-nano) on first visit and cached by the browser.
 
 The whole thing is one self-contained HTML file at [`demo/index.html`](./demo/index.html). Copy it anywhere, `open index.html`, same result.
 
@@ -20,7 +20,7 @@ The whole thing is one self-contained HTML file at [`demo/index.html`](./demo/in
 pip install onnxruntime opencv-python huggingface_hub numpy
 
 python -m src.use_pretrained --image my_photo.jpg
-# writes my_photo.censored.jpg
+# writes my_photo.blurred.jpg
 ```
 
 Same weights, downloaded from the same HF repo, run through `onnxruntime`. No torch, no libreyolo, no training stack.
@@ -31,13 +31,13 @@ For when you want to learn the pipeline, fine-tune on your own data, or just not
 
 ```bash
 git clone https://github.com/LibreYOLO/use-cases
-cd use-cases/censor-faces
+cd use-cases/blur-faces
 pip install -r requirements.txt
 
 python -m src.download_widerface         # ~360 MB, 1-2 min
 python -m src.train --epochs 30          # ~30-40 min on MPS / CUDA
 python -m src.eval                       # mAP on val
-python -m src.censor --image my.jpg      # blur faces with your own weights
+python -m src.blur --image my.jpg        # blur faces with your own weights
 ```
 
 The defaults reproduce the pretrained release: 80-image WIDERFACE subset, 30 epochs, RF-DETR Nano. Bump `--train-images` and `--epochs` for a stronger model.
@@ -57,7 +57,7 @@ src/
   download_widerface.py   build only: dataset acquisition + YOLO conversion
   train.py                build only: RF-DETR Nano fine-tuning loop
   eval.py                 build only: mAP on val split
-  censor.py               build only: load .pt weights, detect, blur
+  blur.py                 build only: load .pt weights, detect, blur
   use_pretrained.py       path 2: HF download + ONNX inference + blur
   webcam.py               build only: live webcam demo with a trained .pt
 notebooks/

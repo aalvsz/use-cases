@@ -5,8 +5,8 @@ image, and Gaussian-blurs every detected face. Pads each box outward to fully
 cover the face including hair / chin edges.
 
 Usage:
-    python -m src.censor --weights weights/face.pt --image path/to/photo.jpg
-    python -m src.censor --weights weights/face.pt --image in.jpg --out out.jpg --conf 0.3
+    python -m src.blur --weights weights/face.pt --image path/to/photo.jpg
+    python -m src.blur --weights weights/face.pt --image in.jpg --out out.jpg --conf 0.3
 """
 from __future__ import annotations
 
@@ -46,7 +46,7 @@ def main() -> int:
         print(f"missing image: {args.image}", file=sys.stderr)
         return 1
 
-    out_path = args.out or args.image.with_name(args.image.stem + ".censored.jpg")
+    out_path = args.out or args.image.with_name(args.image.stem + ".blurred.jpg")
 
     print(f"loading {args.weights}")
     model = LibreYOLO(str(args.weights), nb_classes=1, device=args.device)

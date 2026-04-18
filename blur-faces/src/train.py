@@ -64,7 +64,7 @@ def main() -> int:
             imgsz=args.imgsz,
             device=args.device,
             project="runs/train",
-            name="censor_faces",
+            name="blur_faces",
             exist_ok=True,
         )
     except ZeroDivisionError:
